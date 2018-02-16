@@ -1,0 +1,28 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "jsx": true,
+      "experimentalObjectRestSpread": true
+    },
+    "sourceType": "module"
+  },
+  "extends": ["airbnb", "prettier"],
+  "rules": {
+    "linebreak-style": "off",
+    "no-console": "off"
+  },
+  "globals": {
+    "document": true,
+    "window": true,
+    "chrome": true,
+    "Vue": true
+  },
+  "plugins": ["vue"]
+}
