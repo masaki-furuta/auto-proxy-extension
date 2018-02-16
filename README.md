@@ -1,2 +1,3 @@
-# tor-control-extension
-Control tor from within your browser. 
+# auto-proxy-extension
+
+Automate proxy usage per URL basis. 
