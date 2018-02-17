@@ -4,11 +4,11 @@ chrome.runtime.onInstalled.addListener(details => {
 })
 
 chrome.webRequest.onBeforeRequest.addListener(
-  (a, b, c, d, e) => {
-    console.log(a, b, c, d, e)
+  details => {
+    console.log(details)
   },
   {
     urls: ['http://*/*', 'https://*/*']
   },
-  ['blocking', 'requestBody']
+  ['requestBody']
 )
