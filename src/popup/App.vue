@@ -13,6 +13,7 @@ export default {
   },
   created() {
     console.log('View initialized')
+    console.log(chrome.extension.getBackgroundPage())
   },
   methods: {}
 }

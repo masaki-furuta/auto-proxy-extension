@@ -71,12 +71,24 @@ if (process.env.NODE_ENV === 'production') {
   ])
 } else {
   config.plugins = (config.plugins || []).concat([
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: '"development"'
+      }
+    }),
     new ChromeExtensionReloader({
       entries: {
         background: 'background',
         options: 'options',
         popup: 'popup',
         contentScripts: 'contentScripts'
+      }
+    }),
+    new webpack.LoaderOptionsPlugin({
+      minimize: false,
+      debug: true,
+      options: {
+        context: `${__dirname}/src`
       }
     })
   ])
