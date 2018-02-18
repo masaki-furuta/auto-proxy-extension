@@ -7,9 +7,7 @@ chrome.runtime.onInstalled.addListener(details => {
 
 chrome.webRequest.onBeforeRequest.addListener(
   details => {
-    const {
-      tabId
-    } = details
+    const { tabId } = details
 
     const a = document.createElement('a')
     a.href = details.url
@@ -20,26 +18,26 @@ chrome.webRequest.onBeforeRequest.addListener(
     } else {
       requestList[tabId] = [url]
     }
-
-    console.log(requestList)
-
-  }, {
+  },
+  {
     urls: ['http://*/*', 'https://*/*']
-  }, []
+  },
+  []
 )
 
-chrome.tabs.onUpdated.addListener(details => {
-  const {
-    tabId
-  } = details
-
-  requestList[tabId] = []
+chrome.tabs.onReplaced.addListener(details => {
+  const { tabId } = details
+  delete requestList[tabId]
 })
 
 chrome.tabs.onRemoved.addListener(details => {
-  const {
-    tabId
-  } = details
-
+  const { tabId } = details
   delete requestList[tabId]
+})
+
+chrome.tabs.onUpdated.addListener(details => {
+  const { tabId, status } = details
+  if (status === 'loading') {
+    delete requestList[tabId]
+  }
 })
