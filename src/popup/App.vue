@@ -10,12 +10,7 @@ export default {
     return {
       msg: 'Welcome!'
     }
-  },
-  created() {
-    console.log('View initialized')
-    console.log(chrome.extension.getBackgroundPage())
-  },
-  methods: {}
+  }
 }
 </script>
 

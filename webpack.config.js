@@ -1,97 +1,117 @@
+const path = require('path')
 const webpack = require('webpack')
 const WebpackShellPlugin = require('webpack-shell-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-const config = {
-  context: `${__dirname}/src`,
+module.exports = {
+  context: path.resolve(__dirname, './src'),
   entry: {
-    background: './background',
-    options: './options',
-    popup: './popup',
-    contentScripts: './contentScripts'
+    vue: 'vue/dist/vue.runtime.esm.js',
+    bulma: 'bulma/css/bulma.css',
+    background: './background/index.js',
+    options: './options/index.js',
+    popup: './popup/index.js',
+    'contentScripts/index': './contentScripts/index.js'
   },
   output: {
-    path: `${__dirname}/dist`,
-    filename: '[name]/index.js'
-  },
-  resolve: {
-    extensions: ['.js']
+    path: path.resolve(__dirname, './dist'),
+    publicPath: '.',
+    filename: '[name].js'
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.vue$/,
-        loaders: 'vue-loader'
+        loader: 'vue-loader'
       },
       {
-        test: /\.css$/,
-        loader: 'css-loader'
+        test: /\.js$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/
       },
       {
         test: /\.styl$/,
-        loader: 'style-loader!css-loader!stylus-loader'
+        use: ['style-loader', 'css-loader', 'stylus-loader']
       },
       {
-        test: /\.(png|jpg|gif|svg|ico)$/,
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.(png|jpg|gif|svg)$/,
         loader: 'file-loader',
         options: {
-          name: '[name].[ext]?emitFile=false'
+          name: '[name].[ext]?[hash]'
         }
       }
     ]
   },
+  resolve: {
+    alias: {
+      vue$: 'vue/dist/vue.runtime.esm.js',
+      bulma$: 'bulma/css/bulma.css'
+    },
+    extensions: ['.js']
+  },
   plugins: [
+    new CleanWebpackPlugin(['./dist/', './dist-zip/']),
     new CopyWebpackPlugin([
       { from: 'assets', to: 'assets' },
-      { from: 'options/index.html', to: 'options/index.html' },
-      { from: 'popup/index.html', to: 'popup/index.html' },
-      { from: 'manifest.json', to: 'manifest.json' }
+      { from: 'manifest.json', to: 'manifest.json', flatten: true }
     ]),
     new WebpackShellPlugin({
       onBuildEnd: ['node scripts/remove-evals.js']
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Options',
+      template: './index.html',
+      inject: true,
+      chunks: ['bulma', 'vue', 'options'],
+      filename: 'options.html'
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Popup',
+      template: './index.html',
+      inject: true,
+      chunks: ['bulma', 'vue', 'popup'],
+      filename: 'popup.html'
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      names: ['vue', 'bulma']
     })
   ]
 }
 
 if (process.env.NODE_ENV === 'production') {
-  config.devtool = false
-
-  config.plugins = (config.plugins || []).concat([
+  module.exports.plugins = (module.exports.plugins || []).concat([
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"'
       }
     }),
-    new UglifyJsPlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+      sourceMap: true,
+      compress: {
+        warnings: false
+      }
+    }),
     new webpack.LoaderOptionsPlugin({
       minimize: true
     })
   ])
 } else {
-  config.plugins = (config.plugins || []).concat([
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: '"development"'
-      }
-    }),
+  module.exports.plugins = (module.exports.plugins || []).concat([
+    new webpack.HotModuleReplacementPlugin(),
     new ChromeExtensionReloader({
       entries: {
         background: 'background',
         options: 'options',
         popup: 'popup',
-        contentScripts: 'contentScripts'
-      }
-    }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: false,
-      debug: true,
-      options: {
-        context: `${__dirname}/src`
+        contentScripts: 'contentScripts/index'
       }
     })
   ])
 }
-
-module.exports = config
