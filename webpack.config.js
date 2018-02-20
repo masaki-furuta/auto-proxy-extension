@@ -9,11 +9,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 module.exports = {
   context: path.resolve(__dirname, './src'),
   entry: {
-    vue: 'vue/dist/vue.runtime.esm.js',
-    bulma: 'bulma/css/bulma.css',
-    background: './background/index.js',
     options: './options/index.js',
     popup: './popup/index.js',
+    background: './background/index.js',
     'contentScripts/index': './contentScripts/index.js'
   },
   output: {
@@ -69,18 +67,19 @@ module.exports = {
       title: 'Options',
       template: './index.html',
       inject: true,
-      chunks: ['bulma', 'vue', 'options'],
+      chunks: ['manifest', 'vendor', 'options'],
       filename: 'options.html'
     }),
     new HtmlWebpackPlugin({
       title: 'Popup',
       template: './index.html',
       inject: true,
-      chunks: ['bulma', 'vue', 'popup'],
+      chunks: ['manifest', 'vendor', 'popup'],
       filename: 'popup.html'
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['vue', 'bulma'],
+      names: ['manifest', 'bulma', 'vue'],
+      filename: 'vendor.js',
       chunks: ['options', 'popup']
     })
   ]
