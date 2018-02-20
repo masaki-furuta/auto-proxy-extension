@@ -80,7 +80,8 @@ module.exports = {
       filename: 'popup.html'
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['vue', 'bulma']
+      names: ['vue', 'bulma'],
+      chunks: ['options', 'popup']
     })
   ]
 }
