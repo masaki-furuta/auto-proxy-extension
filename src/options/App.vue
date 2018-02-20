@@ -1,118 +1,37 @@
 <template>
-  <div>
-    <section class="hero is-primary">
-      <div class="hero-body">
-        <div class="container">
-          <h1 class="title">
-            Auto Proxy
-          </h1>
-          <h2 class="subtitle">
-            Options
-          </h2>
-        </div>
-      </div>
-    </section>
-    <section class="section">
-      <div class="container">
-        <h1 class="title">Manage Proxies</h1>
-        <h2 class="subtitle">
-          Manage proxy configurations.
-        </h2>
-        <div class="field">
-          <label class="label">Name</label>
-          <div class="control">
-            <input class="input"
-                   type="text"
-                   placeholder="Text input">
-          </div>
-        </div>
-
-        <div class="field">
-          <label class="label">Username</label>
-          <div class="control has-icons-left has-icons-right">
-            <input class="input is-success"
-                   type="text"
-                   placeholder="Text input"
-                   value="bulma">
-            <span class="icon is-small is-left">
-              <i class="fas fa-user" />
-            </span>
-            <span class="icon is-small is-right">
-              <i class="fas fa-check" />
-            </span>
-          </div>
-          <p class="help is-success">This username is available</p>
-        </div>
-
-        <div class="field">
-          <label class="label">Email</label>
-          <div class="control has-icons-left has-icons-right">
-            <input class="input is-danger"
-                   type="email"
-                   placeholder="Email input"
-                   value="hello@">
-            <span class="icon is-small is-left">
-              <i class="fas fa-envelope" />
-            </span>
-            <span class="icon is-small is-right">
-              <i class="fas fa-exclamation-triangle" />
-            </span>
-          </div>
-          <p class="help is-danger">This email is invalid</p>
-        </div>
-
-        <div class="field">
-          <label class="label">Subject</label>
-          <div class="control">
-            <div class="select">
-              <select>
-                <option>Select dropdown</option>
-                <option>With options</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="field">
-          <label class="label">Message</label>
-          <div class="control">
-            <textarea class="textarea"
-                      placeholder="Textarea" />
-          </div>
-        </div>
-
-        <div class="field">
-          <div class="control">
-            <label class="checkbox">
-              <input type="checkbox"> I agree to the
-              <a href="#">terms and conditions</a>
-            </label>
-          </div>
-        </div>
-
-        <div class="field">
-          <div class="control">
-            <label class="radio">
-              <input type="radio"
-                     name="question"> Yes
-            </label>
-            <label class="radio">
-              <input type="radio"
-                     name="question"> No
-            </label>
-          </div>
-        </div>
-
-        <div class="field is-grouped">
-          <div class="control">
-            <button class="button is-link">Submit</button>
-          </div>
-          <div class="control">
-            <button class="button is-text">Cancel</button>
-          </div>
-        </div>
-      </div>
-    </section>
+  <div class="section">
+    <nav class="panel">
+      <p class="panel-heading">
+        Proxies
+      </p>
+      <span class="panel-block is-active">
+        Direct Connection
+      </span>
+      <span class="panel-block">
+        <span class="is-pulled-left">marksheet</span>
+        <a class="button is-small is-danger is-pulled-right">x</a>
+      </span>
+    </nav>
+    <div class="field has-addons">
+      <p class="control">
+        <span class="select">
+          <select>
+            <option>HTTP</option>
+            <option>HTTPS</option>
+            <option>SOCKS4</option>
+            <option>SOCKS5</option>
+          </select>
+        </span>
+      </p>
+      <p class="control is-expanded">
+        <input class="input"
+               type="text"
+               placeholder="Address:Port">
+      </p>
+      <p class="control">
+        <a class="button is-primary">Add</a>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -127,4 +46,7 @@ export default {
 </script>
 
 <style lang="stylus">
+.section {
+  padding: 2rem 1rem
+}
 </style>
