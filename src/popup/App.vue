@@ -10,6 +10,7 @@ import debounce from 'lodash.debounce'
 export default {
   data() {
     return {
+      defaultProxy: null,
       proxies: []
     }
   },
@@ -17,12 +18,19 @@ export default {
   created() {
     console.log(debounce)
     this.getProxies()
+    this.getDefaultProxy()
   },
 
   methods: {
     getProxies() {
       chrome.storage.sync.get(null, res => {
         this.proxies = res.proxies.length ? res.proxies : []
+      })
+    },
+
+    getDefaultProxy() {
+      chrome.storage.sync.get(null, res => {
+        this.defaultProxy = res.defaultProxy || 'direct'
       })
     }
   }

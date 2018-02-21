@@ -2,7 +2,19 @@ const requestList = {}
 
 // OnInstall handler
 chrome.runtime.onInstalled.addListener(details => {
-  console.log(details)
+  if (details.reason === 'install') {
+    chrome.storage.sync.set({
+      proxies: [
+        {
+          id: 'direct',
+          name: 'Direct Connection',
+          address: '',
+          port: '',
+          protocol: ''
+        }
+      ]
+    })
+  }
 })
 
 chrome.webRequest.onBeforeRequest.addListener(

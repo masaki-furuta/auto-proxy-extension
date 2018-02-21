@@ -4,18 +4,9 @@
       <p class="menu-label is-size-5">
         Proxies
         <br>
-        <span class="is-size-7">Click to set default proxy</span>
+        <span class="is-size-7">Click to set default proxy. </span>
       </p>
       <ul class="proxies-list">
-        <li class="tags has-addons"
-            v-show="defaultProxy">
-          <span class="tag"
-                @click="setDefaultProxy({id: 'direct'})"
-                :class="{'is-primary': isDefault({id: 'direct'})}">
-            Use Direct Connection
-          </span>
-          <a class="tag is-delete is-disabled" />
-        </li>
         <transition-group name="list-in"
                           appear>
           <li class="tags has-addons"
@@ -39,7 +30,7 @@
       <p class="menu-label is-size-5">
         New
         <br>
-        <span class="is-size-7">Add new proxy</span>
+        <span class="is-size-7">Add proxy.</span>
       </p>
       <div class="panel-block-custom">
         <div class="columns is-mobile">
@@ -111,7 +102,7 @@ export default {
 
   methods: {
     isDefault(proxy) {
-      return this.defaultProxy === proxy.id
+      return proxy.id === this.defaultProxy || proxy.id === 'direct'
     },
 
     setDefaultProxy(proxy) {
@@ -140,7 +131,7 @@ export default {
     },
 
     deleteProxy(proxy) {
-      if (proxy.id === this.defaultProxy) return
+      if (proxy.id === this.defaultProxy || proxy.id === 'direct') return
 
       this.proxies = this.proxies.filter(p => p.id !== proxy.id)
 
