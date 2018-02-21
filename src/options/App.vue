@@ -20,7 +20,7 @@
             </span>
             <a @click="deleteProxy(proxy)"
                class="tag is-delete"
-               :class="{'is-disabled': isDefault(proxy)}" />
+               :class="{'is-disabled': isNotRemoveable(proxy)}" />
           </li>
         </transition-group>
       </ul>
@@ -102,6 +102,10 @@ export default {
 
   methods: {
     isDefault(proxy) {
+      return proxy.id === this.defaultProxy
+    },
+
+    isNotRemoveable(proxy) {
       return proxy.id === this.defaultProxy || proxy.id === 'direct'
     },
 
