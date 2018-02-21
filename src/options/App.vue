@@ -42,13 +42,13 @@
             <p class="control">
               <input class="input"
                      type="text"
-                     v-model="proxy.name"
+                     v-model.trim="proxy.name"
                      placeholder="Name">
             </p>
             <p class="control">
               <input class="input"
                      type="text"
-                     v-model="proxy.address"
+                     v-model.trim="proxy.address"
                      placeholder="Address">
             </p>
           </div>
@@ -66,8 +66,8 @@
             </p>
             <p class="control">
               <input class="input"
-                     type="text"
-                     v-model="proxy.port"
+                     type="number"
+                     v-model.trim="proxy.port"
                      placeholder="Port">
             </p>
           </div>
@@ -87,46 +87,14 @@ export default {
   data() {
     return {
       msg: 'Welcome!',
-      defaultProxy: 1,
+      defaultProxy: 'direct',
       proxy: {
         name: '',
         address: '',
         port: 8080,
         protocol: 'HTTP'
       },
-      proxies: [
-        {
-          id: 0,
-          name: 'Default',
-          address: 'ala balh',
-          port: 3000,
-          protocol: 'blah'
-        },
-
-        {
-          id: 1,
-          name: 'Default',
-          address: 'fala balh',
-          port: 4000,
-          protocol: 'blah'
-        },
-
-        {
-          id: 2,
-          name: 'Default',
-          address: 'gala balh',
-          port: 5000,
-          protocol: 'blah'
-        },
-
-        {
-          id: 3,
-          name: 'Default',
-          address: 'bala balh',
-          port: 6000,
-          protocol: 'blah'
-        }
-      ]
+      proxies: []
     }
   },
   methods: {
@@ -186,7 +154,7 @@ export default {
 }
 
 .panel-block-custom {
-  border: 1px solid #dbdbdb
+  border: 1px solid rgba(0, 0, 0, 0.1)
   padding: 1.5rem
   padding-bottom: 0
   border-radius: 3px
