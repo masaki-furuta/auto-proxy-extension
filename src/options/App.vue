@@ -6,24 +6,24 @@
         <br>
         <span class="is-size-7">Click to set default proxy. </span>
       </p>
-      <ul class="proxies-list">
-        <transition-group name="list-in"
-                          appear>
-          <li class="tags has-addons"
-              v-for="proxy in proxies"
-              :key="proxy.id">
-            <span class="tag"
-                  @click="setDefaultProxy(proxy)"
-                  :class="{'is-primary': isDefault(proxy)}"
-                  :title="proxy.protocol + '://' + proxy.address + ':' + proxy.port">
-              {{ proxy.name }}
-            </span>
-            <a @click="deleteProxy(proxy)"
-               class="tag is-delete"
-               :class="{'is-disabled': isNotRemoveable(proxy)}" />
-          </li>
-        </transition-group>
-      </ul>
+      <transition-group class="proxies-list"
+                        name="list-out"
+                        appear
+                        tag="ul">
+        <li class="tags has-addons"
+            v-for="proxy in proxies"
+            :key="proxy.id">
+          <span class="tag"
+                @click="setDefaultProxy(proxy)"
+                :class="{'is-primary': isDefault(proxy)}"
+                :title="proxy.protocol + '://' + proxy.address + ':' + proxy.port">
+            {{ proxy.name }}
+          </span>
+          <a @click="deleteProxy(proxy)"
+             class="tag is-delete"
+             :class="{'is-disabled': isNotRemoveable(proxy)}" />
+        </li>
+      </transition-group>
     </aside>
     <br>
     <nav class="panel">
@@ -75,6 +75,19 @@
         </p>
       </div>
     </nav>
+    <hr>
+    <footer class="footer">
+      <div class="container">
+        <div class="content has-text-centered">
+          <p>
+            <strong>Auto Proxy</strong> by
+            <a href="https://github.com/mubaidr">Muhammad Ubaid Raza</a>.
+            <br> The source code is licensed
+            <a href="http://opensource.org/licenses/mit-license.php">MIT</a>.
+          </p>
+        </div>
+      </div>
+    </footer>
   </div>
 </template>
 
@@ -166,7 +179,8 @@ export default {
 </script>
 
 <style lang="stylus">
-.section {
+.section,
+.footer {
   padding: 2rem 1rem
 }
 

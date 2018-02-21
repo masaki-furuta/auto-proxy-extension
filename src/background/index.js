@@ -1,4 +1,12 @@
-const requestList = {}
+const domainList = {}
+let activeTabId = null
+
+function sendDomainList() {
+  chrome.extension.sendMessage({
+    type: 'domainList',
+    data: domainList[activeTabId]
+  })
+}
 
 // OnInstall handler
 chrome.runtime.onInstalled.addListener(details => {
@@ -25,10 +33,12 @@ chrome.webRequest.onBeforeRequest.addListener(
     a.href = details.url
     const url = a.host
 
-    if (requestList[tabId]) {
-      requestList[tabId].push(url)
+    if (domainList[tabId]) {
+      if (domainList[tabId].indexOf(url) === -1) {
+        domainList[tabId].push(url)
+      }
     } else {
-      requestList[tabId] = [url]
+      domainList[tabId] = [url]
     }
   },
   {
@@ -39,17 +49,32 @@ chrome.webRequest.onBeforeRequest.addListener(
 
 chrome.tabs.onReplaced.addListener(details => {
   const { tabId } = details
-  delete requestList[tabId]
+
+  delete domainList[tabId]
 })
 
 chrome.tabs.onRemoved.addListener(details => {
   const { tabId } = details
-  delete requestList[tabId]
+
+  delete domainList[tabId]
 })
 
 chrome.tabs.onUpdated.addListener(details => {
   const { tabId, status } = details
+
   if (status === 'loading') {
-    delete requestList[tabId]
+    delete domainList[tabId]
+  } else if (status === 'completed') {
+    sendDomainList()
+  }
+})
+
+chrome.tabs.onActivated.addListener(details => {
+  activeTabId = details.tabId
+})
+
+chrome.runtime.onMessage.addListener(request => {
+  if (request.type === 'getDomainList') {
+    sendDomainList()
   }
 })
