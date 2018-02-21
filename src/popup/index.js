@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import 'bulma/css/bulma.css'
+import '../assets/animations.styl'
 import App from './App.vue'
 
 // eslint-disable-next-line

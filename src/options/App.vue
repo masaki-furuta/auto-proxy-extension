@@ -15,18 +15,21 @@
           </span>
           <a class="tag is-delete is-disabled" />
         </li>
-        <li class="tags has-addons"
-            v-for="proxy in proxies"
-            :key="proxy.address">
-          <span class="tag"
-                @click="setDefaultProxy(proxy)"
-                :class="{'is-primary': isDefault(proxy)}">
-            {{ proxy.protocol }} {{ proxy.address }} {{ proxy.port }}
-          </span>
-          <a @click="deleteProxy(proxy)"
-             class="tag is-delete"
-             :class="{'is-disabled': isDefault(proxy)}" />
-        </li>
+        <transition-group name="list-in"
+                          appear>
+          <li class="tags has-addons"
+              v-for="proxy in proxies"
+              :key="proxy.id">
+            <span class="tag"
+                  @click="setDefaultProxy(proxy)"
+                  :class="{'is-primary': isDefault(proxy)}">
+              {{ proxy.protocol }} {{ proxy.address }} {{ proxy.port }}
+            </span>
+            <a @click="deleteProxy(proxy)"
+               class="tag is-delete"
+               :class="{'is-disabled': isDefault(proxy)}" />
+          </li>
+        </transition-group>
       </ul>
     </aside>
     <br>
@@ -79,37 +82,50 @@
         </p>
       </div>
     </nav>
+    {{ proxies }}
   </div>
 </template>
 
 <script>
+import debounce from 'lodash.debounce'
+
 export default {
   data() {
     return {
-      msg: 'Welcome!',
       defaultProxy: 'direct',
       proxy: {
-        name: '',
-        address: '',
+        name: 'Localhost',
+        address: '127.0.0.1',
         port: 8080,
         protocol: 'HTTP'
       },
       proxies: []
     }
   },
+
+  created() {
+    this.getProxies()
+  },
+
   methods: {
     isDefault(proxy) {
       return this.defaultProxy === proxy.id
     },
+
     setDefaultProxy(proxy) {
       this.defaultProxy = proxy.id
+
+      debounce(this.saveDefaultProxy, 250, { trailing: true })()
     },
+
     addProxy() {
       if (!this.proxy.name) this.proxy.name = 'Unnamed'
       if (!this.proxy.address) this.proxy.address = '127.0.0.1'
       if (!this.proxy.port) this.proxy.address = 8080
 
-      this.proxies.push(JSON.parse(JSON.stringify(this.proxy)))
+      const clone = JSON.parse(JSON.stringify(this.proxy))
+      clone.id = Date.now()
+      this.proxies.push(clone)
 
       this.proxy = {
         name: '',
@@ -117,11 +133,30 @@ export default {
         port: 8080,
         protocol: 'HTTP'
       }
+
+      debounce(this.saveProxies, 250, { trailing: true })()
     },
+
     deleteProxy(proxy) {
       if (proxy.id === this.defaultProxy) return
 
       this.proxies = this.proxies.filter(p => p.id !== proxy.id)
+
+      debounce(this.saveProxies, 250, { trailing: true })()
+    },
+
+    getProxies() {
+      chrome.storage.sync.get(null, res => {
+        this.proxies = res.proxies.length ? res.proxies : []
+      })
+    },
+
+    saveProxies() {
+      chrome.storage.sync.set({ proxies: this.proxies })
+    },
+
+    saveDefaultProxy() {
+      chrome.storage.sync.set({ defaultProxy: this.defaultProxy })
     }
   }
 }

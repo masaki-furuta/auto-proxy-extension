@@ -1,14 +1,29 @@
 <template>
   <div>
-    <h1>{{ msg }}</h1>
+    <h1>{{ proxies }}</h1>
   </div>
 </template>
 
 <script>
+import debounce from 'lodash.debounce'
+
 export default {
   data() {
     return {
-      msg: 'Welcome!'
+      proxies: []
+    }
+  },
+
+  created() {
+    console.log(debounce)
+    this.getProxies()
+  },
+
+  methods: {
+    getProxies() {
+      chrome.storage.sync.get(null, res => {
+        this.proxies = res.proxies.length ? res.proxies : []
+      })
     }
   }
 }
