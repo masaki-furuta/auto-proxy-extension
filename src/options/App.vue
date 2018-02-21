@@ -7,7 +7,8 @@
         <span class="is-size-7">Click to set default proxy</span>
       </p>
       <ul class="proxies-list">
-        <li class="tags has-addons">
+        <li class="tags has-addons"
+            v-show="defaultProxy">
           <span class="tag"
                 @click="setDefaultProxy({id: 'direct'})"
                 :class="{'is-primary': isDefault({id: 'direct'})}">
@@ -22,8 +23,9 @@
               :key="proxy.id">
             <span class="tag"
                   @click="setDefaultProxy(proxy)"
-                  :class="{'is-primary': isDefault(proxy)}">
-              {{ proxy.protocol }} {{ proxy.address }} {{ proxy.port }}
+                  :class="{'is-primary': isDefault(proxy)}"
+                  :title="proxy.protocol + '://' + proxy.address + ':' + proxy.port">
+              {{ proxy.name }}
             </span>
             <a @click="deleteProxy(proxy)"
                class="tag is-delete"
@@ -82,7 +84,6 @@
         </p>
       </div>
     </nav>
-    {{ proxies }}
   </div>
 </template>
 
@@ -92,7 +93,7 @@ import debounce from 'lodash.debounce'
 export default {
   data() {
     return {
-      defaultProxy: 'direct',
+      defaultProxy: null,
       proxy: {
         name: 'Localhost',
         address: '127.0.0.1',
@@ -105,6 +106,7 @@ export default {
 
   created() {
     this.getProxies()
+    this.getDefaultProxy()
   },
 
   methods: {
@@ -147,12 +149,18 @@ export default {
 
     getProxies() {
       chrome.storage.sync.get(null, res => {
-        this.proxies = res.proxies.length ? res.proxies : []
+        this.proxies = res.proxies || []
       })
     },
 
     saveProxies() {
       chrome.storage.sync.set({ proxies: this.proxies })
+    },
+
+    getDefaultProxy() {
+      chrome.storage.sync.get(null, res => {
+        this.defaultProxy = res.defaultProxy || 'direct'
+      })
     },
 
     saveDefaultProxy() {
