@@ -71,14 +71,10 @@
 export default {
   data() {
     return {
-      activeDomain: '',
+      activeDomain: null,
       domainFilter: '',
       domainList: [],
-      preferences: {
-        proxies: [],
-        defaultProxy: 'direct',
-        domainProxyList: {}
-      } // { proxies, defaultProxy, domainProxyList }
+      preferences: null // { proxies, defaultProxy, domainProxyList }
     }
   },
 
@@ -97,9 +93,9 @@ export default {
 
   methods: {
     isDefaultProxyForDomain(domain, proxy) {
-      const p = this.preferences.domainProxyList[domain] || { id: 'direct' }
+      const p = this.preferences.domainProxyList[domain] || 'direct'
 
-      return p.id === proxy.id
+      return p === proxy.id
     },
 
     defaultProxyForDomain(domain) {
@@ -109,7 +105,7 @@ export default {
 
     toggleActiveDomain(domain) {
       if (this.activeDomain === domain) {
-        this.activeDomain = ''
+        this.activeDomain = null
       } else {
         this.activeDomain = domain
       }
@@ -117,7 +113,7 @@ export default {
 
     getPreferences() {
       chrome.extension.sendMessage({ type: 'getPreferences' }, preferences => {
-        this.preferences = preferences
+        this.$set(this, 'preferences', preferences)
       })
     },
 
@@ -135,8 +131,12 @@ export default {
     },
 
     setDomainProxy(domain, proxyId) {
-      this.toggleActiveDomain(domain)
-      this.preferences.domainProxyList[domain] = proxyId
+      if (proxyId === 'direct') {
+        delete this.preferences.domainProxyList[domain]
+      } else {
+        this.$set(this.preferences.domainProxyList, domain, proxyId)
+      }
+
       this.setPreferences()
     }
   }
