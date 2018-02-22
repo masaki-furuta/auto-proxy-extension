@@ -25,7 +25,16 @@
               <button class="button is-block"
                       aria-haspopup="true"
                       :aria-controls="'dropdown-menu-' + domain">
-                {{ domain }}
+                <div class="columns is-mobile">
+                  <div class="column is-two-third">
+                    <span>{{ domain }}</span>
+                  </div>
+                  <div class="column">
+                    <span class="has-text-grey-lighter is-pulled-right">
+                      {{ defaultProxyForDomain() }}
+                    </span>
+                  </div>
+                </div>
               </button>
             </div>
             <div class="dropdown-menu"
@@ -35,7 +44,8 @@
                 <a class="dropdown-item"
                    v-for="proxy in preferences.proxies"
                    :key="proxy.id"
-                   :class="{'is-active': isDefault(proxy)}">
+                   @click="setDomainProxy(domain, proxy.id)"
+                   :class="{'is-active': isDefaultProxyForDomain(domain, proxy)}">
                   {{ proxy.name }}
                 </a>
               </div>
@@ -66,7 +76,11 @@ export default {
       activeDomain: '',
       domainFilter: '',
       domainList: [],
-      preferences: null // { proxies, defaultProxy, domainProxyList }
+      preferences: {
+        proxies: [],
+        defaultProxy: 'direct',
+        domainProxyList: {}
+      } // { proxies, defaultProxy, domainProxyList }
     }
   },
 
@@ -84,6 +98,17 @@ export default {
   },
 
   methods: {
+    isDefaultProxyForDomain(domain, proxy) {
+      const p = this.preferences.domainProxyList[domain] || { id: 'direct' }
+
+      return p.id === proxy.id
+    },
+
+    defaultProxyForDomain(domain) {
+      return (this.preferences.domainProxyList[domain] || { name: 'Direct' })
+        .name
+    },
+
     toggleActiveDomain(domain) {
       if (this.activeDomain === domain) {
         this.activeDomain = ''
@@ -92,13 +117,16 @@ export default {
       }
     },
 
-    isDefault(proxy) {
-      return proxy.id === this.preferences.defaultProxy
-    },
-
     getPreferences() {
       chrome.extension.sendMessage({ type: 'getPreferences' }, preferences => {
         this.preferences = preferences
+      })
+    },
+
+    setPreferences() {
+      chrome.extension.sendMessage({
+        type: 'setPreferences',
+        preferences: this.preferences
       })
     },
 
@@ -106,6 +134,12 @@ export default {
       chrome.extension.sendMessage({ type: 'getDomainList' }, domainList => {
         this.domainList = domainList
       })
+    },
+
+    setDomainProxy(domain, proxyId) {
+      this.toggleActiveDomain(domain)
+      this.preferences.domainProxyList[domain] = proxyId
+      this.setPreferences()
     }
   }
 }
@@ -128,7 +162,7 @@ export default {
   }
 
   .dropdown-content {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5)
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.5)
   }
 
   .dropdown-item {

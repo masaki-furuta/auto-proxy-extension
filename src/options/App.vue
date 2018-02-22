@@ -17,8 +17,8 @@
             <span class="tag"
                   @click="setDefaultProxy(proxy)"
                   :class="{'is-primary': isDefault(proxy)}"
-                  :title="proxy.protocol + '://' + proxy.address + ':' + proxy.port">
-              {{ proxy.name }}
+                  :title="getProxyTitle(proxy)">
+              {{ proxy.name.toUpperCase() }}
             </span>
             <a @click="deleteProxy(proxy)"
                class="tag is-delete"
@@ -118,6 +118,12 @@ export default {
   methods: {
     isDefault(proxy) {
       return proxy.id === this.preferences.defaultProxy
+    },
+
+    getProxyTitle(proxy) {
+      return proxy.id === 'direct'
+        ? 'Use Direct Connection'
+        : `${proxy.protocol}://${proxy.address}:${proxy.port}`
     },
 
     isNotRemoveable(proxy) {

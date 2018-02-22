@@ -83,6 +83,7 @@ chrome.tabs.onUpdated.addListener(details => {
   }
 })
 
+// message listner
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.type) {
     case 'getPreferences':
