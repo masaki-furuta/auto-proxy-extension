@@ -102,9 +102,9 @@ export default {
   data() {
     return {
       proxy: {
-        name: 'Localhost',
-        address: '127.0.0.1',
-        port: 8080,
+        name: '',
+        address: '',
+        port: '',
         protocol: 'HTTP'
       },
       preferences: null // { proxies, defaultProxy, domainProxyList }
