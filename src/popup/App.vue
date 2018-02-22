@@ -153,7 +153,6 @@ export default {
   margin-bottom: 5px
 
   .dropdown-menu {
-    padding-top: 0
     top: calc(100% - 5px)
     width: 100%
   }
