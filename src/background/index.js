@@ -42,7 +42,9 @@ chrome.webRequest.onBeforeRequest.addListener(
 
     const a = document.createElement('a')
     a.href = details.url
-    const url = a.host
+
+    const parts = a.host.split('.')
+    const url = (parts.length > 2 ? parts.slice(1) : parts).join('.')
 
     if (domainList[tabId]) {
       if (domainList[tabId].indexOf(url) === -1) {
