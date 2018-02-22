@@ -150,17 +150,18 @@ export default {
 }
 
 .dropdown.custom {
-  background-image: url('/assets/icons/arrow_drop_down.png')
-  background-position: 100% center
-  background-repeat: no-repeat
-  background-size: contain
+  margin-bottom: 5px
 
   .dropdown-menu {
     padding-top: 0
+    top: calc(100% - 5px)
+    width: 100%
   }
 
   .dropdown-content {
-    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.5)
+    padding: 0
+    border-radius: 0 0 3px 3px
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.5)
   }
 
   .dropdown-item {
@@ -176,6 +177,13 @@ export default {
       text-align: left
       justify-content: left
     }
+  }
+
+  .dropdown-icon {
+    background-image: url('/assets/icons/arrow_drop_down.png')
+    background-position: 90% center
+    background-repeat: no-repeat
+    background-size: contain
   }
 }
 </style>
