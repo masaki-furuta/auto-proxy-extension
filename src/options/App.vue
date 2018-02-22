@@ -6,24 +6,26 @@
         <br>
         <span class="is-size-7">Click to set default proxy. </span>
       </p>
-      <transition-group class="proxies-list"
-                        name="list-out"
-                        appear
-                        tag="ul">
-        <li class="tags has-addons"
-            v-for="proxy in proxies"
-            :key="proxy.id">
-          <span class="tag"
-                @click="setDefaultProxy(proxy)"
-                :class="{'is-primary': isDefault(proxy)}"
-                :title="proxy.protocol + '://' + proxy.address + ':' + proxy.port">
-            {{ proxy.name }}
-          </span>
-          <a @click="deleteProxy(proxy)"
-             class="tag is-delete"
-             :class="{'is-disabled': isNotRemoveable(proxy)}" />
-        </li>
-      </transition-group>
+      <template v-if="preferences">
+        <transition-group class="proxies-list"
+                          name="list-out"
+                          appear
+                          tag="ul">
+          <li class="tags has-addons"
+              v-for="proxy in preferences.proxies"
+              :key="proxy.id">
+            <span class="tag"
+                  @click="setDefaultProxy(proxy)"
+                  :class="{'is-primary': isDefault(proxy)}"
+                  :title="proxy.protocol + '://' + proxy.address + ':' + proxy.port">
+              {{ proxy.name }}
+            </span>
+            <a @click="deleteProxy(proxy)"
+               class="tag is-delete"
+               :class="{'is-disabled': isNotRemoveable(proxy)}" />
+          </li>
+        </transition-group>
+      </template>
     </aside>
     <br>
     <nav class="panel">
@@ -81,9 +83,11 @@
         <div class="content has-text-centered">
           <p>
             <strong>Auto Proxy</strong> by
-            <a href="https://github.com/mubaidr">Muhammad Ubaid Raza</a>.
+            <a href="https://github.com/mubaidr"
+               target="_blank">Muhammad Ubaid Raza</a>.
             <br> The source code is licensed
-            <a href="http://opensource.org/licenses/mit-license.php">MIT</a>.
+            <a href="http://opensource.org/licenses/mit-license.php"
+               target="_blank">MIT</a>.
           </p>
         </div>
       </div>
@@ -97,35 +101,33 @@ import debounce from 'lodash.debounce'
 export default {
   data() {
     return {
-      defaultProxy: null,
       proxy: {
         name: 'Localhost',
         address: '127.0.0.1',
         port: 8080,
         protocol: 'HTTP'
       },
-      proxies: []
+      preferences: null // { proxies, defaultProxy, domainProxyList }
     }
   },
 
   created() {
-    this.getProxies()
-    this.getDefaultProxy()
+    this.getPreferences()
   },
 
   methods: {
     isDefault(proxy) {
-      return proxy.id === this.defaultProxy
+      return proxy.id === this.preferences.defaultProxy
     },
 
     isNotRemoveable(proxy) {
-      return proxy.id === this.defaultProxy || proxy.id === 'direct'
+      return proxy.id === this.preferences.defaultProxy || proxy.id === 'direct'
     },
 
     setDefaultProxy(proxy) {
-      this.defaultProxy = proxy.id
+      this.preferences.defaultProxy = proxy.id
 
-      debounce(this.saveDefaultProxy, 250, { trailing: true })()
+      debounce(this.setPreferences, 250, { trailing: true })()
     },
 
     addProxy() {
@@ -135,7 +137,7 @@ export default {
 
       const clone = JSON.parse(JSON.stringify(this.proxy))
       clone.id = Date.now()
-      this.proxies.push(clone)
+      this.preferences.proxies.push(clone)
 
       this.proxy = {
         name: '',
@@ -144,35 +146,32 @@ export default {
         protocol: 'HTTP'
       }
 
-      debounce(this.saveProxies, 250, { trailing: true })()
+      debounce(this.setPreferences, 250, { trailing: true })()
     },
 
     deleteProxy(proxy) {
-      if (proxy.id === this.defaultProxy || proxy.id === 'direct') return
+      if (proxy.id === this.preferences.defaultProxy || proxy.id === 'direct')
+        return
 
-      this.proxies = this.proxies.filter(p => p.id !== proxy.id)
+      this.preferences.proxies = this.preferences.proxies.filter(
+        p => p.id !== proxy.id
+      )
 
-      debounce(this.saveProxies, 250, { trailing: true })()
+      debounce(this.setPreferences, 250, { trailing: true })()
     },
 
-    getProxies() {
-      chrome.storage.sync.get(null, res => {
-        this.proxies = res.proxies || []
+    getPreferences() {
+      chrome.extension.sendMessage({ type: 'getPreferences' }, preferences => {
+        console.log(preferences)
+        this.preferences = preferences
       })
     },
 
-    saveProxies() {
-      chrome.storage.sync.set({ proxies: this.proxies })
-    },
-
-    getDefaultProxy() {
-      chrome.storage.sync.get(null, res => {
-        this.defaultProxy = res.defaultProxy || 'direct'
+    setPreferences() {
+      chrome.extension.sendMessage({
+        type: 'setPreferences',
+        preferences: this.preferences
       })
-    },
-
-    saveDefaultProxy() {
-      chrome.storage.sync.set({ defaultProxy: this.defaultProxy })
     }
   }
 }

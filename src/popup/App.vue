@@ -3,51 +3,54 @@
     <p class="menu-label is-size-5">
       Requests
       <br>
-      <span class="is-size-7">Click URL to change proxy for it. </span>
+      <span class="is-size-7">Click URL to change proxy. </span>
     </p>
-    <p class="control">
-      <input class="input is-small"
-             type="text"
-             v-model="domainFilter"
-             placeholder="search">
-    </p>
-    <br>
-    <transition-group name="list-out"
-                      appear
-                      tag="ul">
-      <li v-for="domain in filteredDomains"
-          :key="domain">
-        <div class="dropdown custom is-block"
-             @click="toggleActiveDomain(domain)"
-             :class="{'is-active': activeDomain === domain}">
-          <div class="dropdown-trigger">
-            <button class="button is-block"
-                    aria-haspopup="true"
-                    :aria-controls="'dropdown-menu-' + domain">
-              {{ domain }}
-            </button>
-          </div>
-          <div class="dropdown-menu"
-               :id="'dropdown-menu-' + domain"
-               role="menu">
-            <div class="dropdown-content">
-              <a class="dropdown-item"
-                 v-for="proxy in proxies"
-                 :key="proxy.id"
-                 :class="{'is-active': isDefault(proxy)}">
-                {{ proxy.name }}
-              </a>
+    <template v-if="preferences">
+      <p class="control">
+        <input class="input is-small"
+               type="text"
+               v-model="domainFilter"
+               placeholder="search">
+      </p>
+      <br>
+      <transition-group name="list-out"
+                        appear
+                        tag="ul">
+        <li v-for="domain in filteredDomains"
+            :key="domain">
+          <div class="dropdown custom is-block"
+               @click="toggleActiveDomain(domain)"
+               :class="{'is-active': activeDomain === domain}">
+            <div class="dropdown-trigger">
+              <button class="button is-block"
+                      aria-haspopup="true"
+                      :aria-controls="'dropdown-menu-' + domain">
+                {{ domain }}
+              </button>
+            </div>
+            <div class="dropdown-menu"
+                 :id="'dropdown-menu-' + domain"
+                 role="menu">
+              <div class="dropdown-content">
+                <a class="dropdown-item"
+                   v-for="proxy in preferences.proxies"
+                   :key="proxy.id"
+                   :class="{'is-active': isDefault(proxy)}">
+                  {{ proxy.name }}
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      </li>
-    </transition-group>
-    <p v-show="filteredDomains.length === 0">
-      No requests captured.
-    </p>
-    <br>
+        </li>
+      </transition-group>
+      <p v-show="filteredDomains.length === 0">
+        No requests captured.
+      </p>
+      <br>
+    </template>
     <div class="has-text-centered is-size-7">
-      <a href="https://github.com/mubaidr">
+      <a href="https://github.com/mubaidr"
+         target="_blank">
         mubaidr@GitHub
       </a>
     </div>
@@ -62,35 +65,22 @@ export default {
     return {
       activeDomain: '',
       domainFilter: '',
-      defaultProxy: null,
-      proxies: [],
-      domains: []
+      domainList: [],
+      preferences: null // { proxies, defaultProxy, domainProxyList }
     }
   },
 
   computed: {
     filteredDomains() {
-      return this.domains
+      return this.domainList
         .filter(domain => domain.indexOf(this.domainFilter) > -1)
         .sort()
     }
   },
 
   created() {
-    this.getProxies()
-    this.getDefaultProxy()
-    this.getDomains()
-
-    chrome.runtime.onMessage.addListener(request => {
-      if (request.type === 'domainList') {
-        this.domains = request.data || [
-          // NOTE: Remove test data
-          'cdn.sstatic.net',
-          'ajax.googleapis.com',
-          'clc.stackoverflow.com'
-        ]
-      }
-    })
+    this.getPreferences()
+    this.getDomainList()
   },
 
   methods: {
@@ -103,23 +93,19 @@ export default {
     },
 
     isDefault(proxy) {
-      return proxy.id === this.defaultProxy
+      return proxy.id === this.preferences.defaultProxy
     },
 
-    getProxies() {
-      chrome.storage.sync.get(null, res => {
-        this.proxies = res.proxies.length ? res.proxies : []
+    getPreferences() {
+      chrome.extension.sendMessage({ type: 'getPreferences' }, preferences => {
+        this.preferences = preferences
       })
     },
 
-    getDefaultProxy() {
-      chrome.storage.sync.get(null, res => {
-        this.defaultProxy = res.defaultProxy || 'direct'
+    getDomainList() {
+      chrome.extension.sendMessage({ type: 'getDomainList' }, domainList => {
+        this.domainList = domainList
       })
-    },
-
-    getDomains() {
-      chrome.extension.sendMessage({ type: 'getDomainList' })
     }
   }
 }
@@ -132,6 +118,11 @@ export default {
 }
 
 .dropdown.custom {
+  background-image: url('/assets/icons/arrow_drop_down.png')
+  background-position: 100% center
+  background-repeat: no-repeat
+  background-size: contain
+
   .dropdown-menu {
     padding-top: 0
   }
