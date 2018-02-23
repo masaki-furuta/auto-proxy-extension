@@ -3,11 +3,27 @@ const domainList = {} // domain list of current opended tabs
 let activeTabId = null // active tab id
 
 // preferences
-function normalizeDomainProxyList(pref) {
-  console.log(pref)
-}
-
 function buildProxyPac(pref) {
+  /*
+  const config = {
+    mode: 'fixed_servers',
+    rules: {
+      singleProxy: {
+        scheme: 'http',
+        host: '',
+        port: ''
+      }
+    }
+  }
+
+  chrome.proxy.settings.set(
+    {
+      value: config,
+      scope: 'regular'
+    },
+    () => {}
+  )
+*/
   console.log(pref)
 }
 
@@ -29,7 +45,7 @@ chrome.runtime.onInstalled.addListener(details => {
       proxies: [
         {
           id: 'direct',
-          name: 'Direct Connection',
+          name: 'Direct',
           address: '',
           port: '',
           protocol: ''
@@ -103,9 +119,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     case 'setPreferences':
       ;({ preferences } = request)
       chrome.storage.sync.set({ preferences })
-
-      normalizeDomainProxyList(preferences)
-      buildProxyPac(preferences)
+      buildProxyPac()
       break
 
     case 'getDomainList':

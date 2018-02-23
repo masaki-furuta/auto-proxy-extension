@@ -11,8 +11,7 @@ module.exports = {
   entry: {
     options: './options/index.js',
     popup: './popup/index.js',
-    background: './background/index.js',
-    'contentScripts/index': './contentScripts/index.js'
+    background: './background/index.js'
   },
   output: {
     path: path.resolve(__dirname, './dist'),
@@ -109,8 +108,7 @@ if (process.env.NODE_ENV === 'production') {
       entries: {
         background: 'background',
         options: 'options',
-        popup: 'popup',
-        contentScripts: 'contentScripts/index'
+        popup: 'popup'
       }
     })
   ])

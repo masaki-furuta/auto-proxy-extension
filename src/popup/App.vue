@@ -178,13 +178,21 @@ export default {
       text-align: left
       justify-content: left
     }
+
+    .column:not(.is-two-third) {
+      padding-right: 24px
+      background-image: url('/assets/icons/arrow_drop_down.png')
+      background-position: 100% center
+      background-repeat: no-repeat
+      background-size: 24px
+    }
   }
 
   .dropdown-icon {
     background-image: url('/assets/icons/arrow_drop_down.png')
     background-position: 90% center
     background-repeat: no-repeat
-    background-size: contain
+    background-size: 50%
   }
 }
 </style>
