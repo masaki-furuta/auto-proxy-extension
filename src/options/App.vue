@@ -168,7 +168,6 @@ export default {
 
     getPreferences() {
       chrome.extension.sendMessage({ type: 'getPreferences' }, preferences => {
-        console.log(preferences)
         this.preferences = preferences
       })
     },
