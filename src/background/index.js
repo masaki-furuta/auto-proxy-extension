@@ -5,19 +5,14 @@ const domainList = {} // domain list of current opended tabs
 let activeTabId = null // active tab id
 
 // preferences
-function setProxy(pref) {
-  // DEBUG: start
-  console.log(pacScriptData(pref))
-  return
-  // DEBUG: start
-
+function setProxy() {
   const config = {
     mode: 'pac_script',
     rules: {
       bypassList: ['<local>']
     },
     pacScript: {
-      data: pacScriptData(pref)
+      data: pacScriptData(preferences)
     }
   }
 
