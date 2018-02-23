@@ -181,17 +181,29 @@ export default {
 
     .column:not(.is-two-third) {
       padding-right: 24px
-      background-image: url('/assets/icons/arrow_drop_down.png')
-      background-position: 100% center
-      background-repeat: no-repeat
-      background-size: 24px
+      position: relative
+
+      &:before {
+        content: ' '
+        position: absolute
+        right: 0
+        width: 24px
+        height: 24px
+        background-image: url('/assets/icons/arrow_drop_down.png')
+        background-position: 100% center
+        background-repeat: no-repeat
+        background-size: 24px
+        transition: rotateX 0.25s ease-out
+      }
     }
   }
 
   &.is-active {
     .button {
       .column:not(.is-two-third) {
-        // TODO: rotate background
+        &:before {
+          transform: rotateX(180deg)
+        }
       }
     }
   }
