@@ -31,7 +31,7 @@
                   </div>
                   <div class="column">
                     <span class="has-text-grey-lighter is-pulled-right">
-                      {{ defaultProxyForDomain() }}
+                      {{ defaultProxyForDomain(domain) }}
                     </span>
                   </div>
                 </div>
@@ -93,13 +93,19 @@ export default {
 
   methods: {
     isDefaultProxyForDomain(domain, proxy) {
-      const p = this.preferences.domainProxyList[domain] || 'direct'
+      const p =
+        this.preferences.domainProxyList[domain] ||
+        this.preferences.defaultProxy
 
       return p === proxy.id
     },
 
     defaultProxyForDomain(domain) {
-      return (this.preferences.domainProxyList[domain] || { name: 'Direct' })
+      const proxyId =
+        this.preferences.domainProxyList[domain] ||
+        this.preferences.defaultProxy
+
+      return this.preferences.proxies.filter(proxy => proxy.id === proxyId)[0]
         .name
     },
 
@@ -131,11 +137,7 @@ export default {
     },
 
     setDomainProxy(domain, proxyId) {
-      if (proxyId === 'direct') {
-        delete this.preferences.domainProxyList[domain]
-      } else {
-        this.$set(this.preferences.domainProxyList, domain, proxyId)
-      }
+      this.$set(this.preferences.domainProxyList, domain, proxyId)
 
       this.setPreferences()
     }

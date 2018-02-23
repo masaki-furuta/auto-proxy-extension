@@ -3,6 +3,14 @@ const domainList = {} // domain list of current opended tabs
 let activeTabId = null // active tab id
 
 // preferences
+function normalizeDomainProxyList(pref) {
+  console.log(pref)
+}
+
+function buildProxyPac(pref) {
+  console.log(pref)
+}
+
 function getPreferences() {
   chrome.storage.sync.get(null, res => {
     ;({ preferences } = res)
@@ -91,13 +99,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     case 'getPreferences':
       sendResponse(preferences)
       break
+
     case 'setPreferences':
       ;({ preferences } = request)
       chrome.storage.sync.set({ preferences })
+
+      normalizeDomainProxyList(preferences)
+      buildProxyPac(preferences)
       break
+
     case 'getDomainList':
       sendResponse(domainList[activeTabId])
       break
+
     default:
       break
   }

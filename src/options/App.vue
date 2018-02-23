@@ -77,7 +77,7 @@
         </p>
       </div>
     </nav>
-    <hr>
+    <br>
     <footer class="footer">
       <div class="container">
         <div class="content has-text-centered">
