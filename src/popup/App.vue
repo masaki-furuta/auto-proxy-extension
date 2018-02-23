@@ -3,14 +3,19 @@
     <p class="menu-label is-size-5">
       Requests
       <br>
-      <span class="is-size-7">Click URL to change proxy. </span>
+      <span class="is-size-6">Click domain to change proxy. </span>
+      <br>
+      <span class="is-size-7">Visit
+        <a href="./options.html"
+           target="_blank">Options</a> to change default proxy. </span>
     </p>
+
     <template v-if="preferences">
       <p class="control">
         <input class="input is-small"
                type="text"
                v-model="domainFilter"
-               placeholder="search">
+               placeholder="Filter domains">
       </p>
       <br>
       <transition-group name="list-out"
