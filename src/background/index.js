@@ -1,39 +1,46 @@
+import { pacScriptData } from './pacScript'
+
 let preferences = {}
 const domainList = {} // domain list of current opended tabs
 let activeTabId = null // active tab id
 
 // preferences
-function buildProxyPac(pref) {
-  /*
+function setProxy(pref) {
+  // DEBUG: start
+  console.log(pacScriptData(pref))
+  return
+  // DEBUG: start
+
   const config = {
-    mode: 'fixed_servers',
+    mode: 'pac_script',
     rules: {
-      singleProxy: {
-        scheme: 'http',
-        host: '',
-        port: ''
-      }
+      bypassList: ['<local>']
+    },
+    pacScript: {
+      data: pacScriptData(pref)
     }
   }
 
-  chrome.proxy.settings.set(
-    {
-      value: config,
-      scope: 'regular'
-    },
-    () => {}
-  )
-*/
-  console.log(pref)
+  chrome.proxy.settings.set({
+    value: config,
+    scope: 'regular'
+  })
 }
 
 function getPreferences() {
   chrome.storage.sync.get(null, res => {
     ;({ preferences } = res)
+
+    setProxy()
   })
-  chrome.tabs.query({ active: true }, tab => {
-    activeTabId = tab[0].id
-  })
+  chrome.tabs.query(
+    {
+      active: true
+    },
+    tab => {
+      activeTabId = tab[0].id
+    }
+  )
 }
 
 getPreferences()
@@ -55,7 +62,9 @@ chrome.runtime.onInstalled.addListener(details => {
       domainProxyList: {}
     }
 
-    chrome.storage.sync.set({ preferences })
+    chrome.storage.sync.set({
+      preferences
+    })
   }
 })
 
@@ -118,8 +127,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     case 'setPreferences':
       ;({ preferences } = request)
-      chrome.storage.sync.set({ preferences })
-      buildProxyPac()
+      chrome.storage.sync.set({
+        preferences
+      })
+      setProxy()
       break
 
     case 'getDomainList':

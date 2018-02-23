@@ -188,6 +188,14 @@ export default {
     }
   }
 
+  &.is-active {
+    .button {
+      .column:not(.is-two-third) {
+        // TODO: rotate background
+      }
+    }
+  }
+
   .dropdown-icon {
     background-image: url('/assets/icons/arrow_drop_down.png')
     background-position: 90% center
