@@ -3,7 +3,7 @@ function getProxyById(proxies, id) {
 
   return proxy.id === 'direct'
     ? `'DIRECT'`
-    : `'PROXY ${proxy.protocol}://${proxy.address}:${proxy.port}'`
+    : `'${proxy.protocol} ${proxy.address}:${proxy.port}'`
 }
 
 module.exports.pacScriptData = preferences => {
@@ -12,14 +12,14 @@ module.exports.pacScriptData = preferences => {
   let func = 'function FindProxyForURL(url, host) {\n'
 
   domains.forEach(domain => {
-    func += `if(url.indexOf('${domain}') !== -1)\n`
-    func += `return ${getProxyById(
-      proxies,
-      domainProxyList[domain] || 'direct'
-    )};\n`
+    func += `if(url.indexOf('${domain}') > -1)\n`
+    func += `return ${getProxyById(proxies, domainProxyList[domain])};\n`
   })
 
   func += `return ${getProxyById(proxies, defaultProxy)};\n`
   func += '}\n'
+
+  console.log(func)
+
   return func
 }

@@ -79,8 +79,7 @@ chrome.webRequest.onBeforeRequest.addListener(
     const a = document.createElement('a')
     a.href = details.url
 
-    const parts = a.host.split('.')
-    const url = (parts.length === 3 ? parts.slice(1) : parts).join('.')
+    const url = a.host.replace('www.', '')
 
     if (domainList[tabId]) {
       if (domainList[tabId].indexOf(url) === -1) {
@@ -143,4 +142,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     default:
       break
   }
+})
+
+/* debug */
+chrome.proxy.onProxyError.addListener(err => {
+  console.log(`${err.error} : ${err.details}`)
 })
