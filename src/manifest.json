@@ -1,8 +1,8 @@
 {
-  "name": "Auto Proxy",
+  "name": "Proxy Switchy Auto",
   "version": "1.0.0",
   "manifest_version": 2,
-  "description": "Automate proxy usage per URL basis.",
+  "description": "Automated proxy switching per domain using PAC script",
   "icons": {
     "16": "assets/icons/icon_16.png",
     "32": "assets/icons/icon_32.png",
