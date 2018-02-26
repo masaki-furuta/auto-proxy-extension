@@ -2,7 +2,7 @@
   "name": "Proxy Switchy Auto",
   "version": "1.0.0",
   "manifest_version": 2,
-  "description": "Automated proxy switching per domain using PAC script",
+  "description": "Automated proxy switching per domain using PAC script.",
   "icons": {
     "16": "assets/icons/icon_16.png",
     "32": "assets/icons/icon_32.png",

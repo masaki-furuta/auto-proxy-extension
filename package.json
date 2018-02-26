@@ -1,12 +1,14 @@
 {
-  "name": "auto-proxy",
-  "version": "1.1.0",
-  "description": "Automate proxy usage per URL basis.",
+  "name": "proxy-switchy-auto",
+  "version": "1.0.0",
+  "description": "Automated proxy switching per domain using PAC script.",
   "author": "Muhammad Ubaid Raza <mubaidr@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development webpack --progress --hide-modules --hot --watch",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules && node scripts/build-zip.js"
+    "dev":
+      "cross-env NODE_ENV=development webpack --progress --hide-modules --hot --watch",
+    "build":
+      "cross-env NODE_ENV=production webpack --progress --hide-modules && node scripts/build-zip.js"
   },
   "dependencies": {
     "bulma": "0.6.2",
