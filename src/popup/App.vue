@@ -2,14 +2,11 @@
   <div class="section">
     <p class="menu-label is-size-5">
       Requests
-      <br>
-      <span class="is-size-6">Click domain to change proxy. </span>
-      <br>
-      <span class="is-size-7">Visit
-        <a href="./options.html"
-           target="_blank">Options</a> to change default proxy. </span>
     </p>
-
+    <span class="is-size-7">Click domain to choose proxy for that domain or visit
+      <a href="./options.html"
+         target="_blank">Options</a> to choose a default for all domains. </span>
+    <hr>
     <template v-if="preferences">
       <p class="control">
         <input class="input is-small"

@@ -1,97 +1,99 @@
 <template>
-  <div class="section">
-    <aside class="menu">
-      <p class="menu-label is-size-5">
-        Proxies
-        <br>
-        <span class="is-size-7">Click to set default proxy. </span>
-      </p>
-      <template v-if="preferences">
-        <transition-group class="proxies-list"
-                          name="list-out"
-                          appear
-                          tag="ul">
-          <li class="tags has-addons"
-              v-for="proxy in preferences.proxies"
-              :key="proxy.id">
-            <span class="tag"
-                  @click="setDefaultProxy(proxy)"
-                  :class="{'is-primary': isDefault(proxy)}"
-                  :title="getProxyTitle(proxy)">
-              {{ proxy.name.toUpperCase() }}
-            </span>
-            <a @click="deleteProxy(proxy)"
-               class="tag is-delete"
-               :class="{'is-disabled': isNotRemoveable(proxy)}" />
-          </li>
-        </transition-group>
-      </template>
-    </aside>
-    <br>
-    <nav class="panel">
-      <p class="menu-label is-size-5">
-        New
-        <br>
-        <span class="is-size-7">Add proxy.</span>
-      </p>
-      <div class="panel-block-custom">
-        <div class="columns is-mobile">
-          <div class="column is-three-fifths">
-            <p class="control">
-              <input class="input"
-                     type="text"
-                     v-model.trim="proxy.name"
-                     placeholder="Name">
-            </p>
-            <p class="control">
-              <input class="input"
-                     type="text"
-                     v-model.trim="proxy.address"
-                     placeholder="Address">
-            </p>
-          </div>
-
-          <div class="column">
-            <p class="control">
-              <span class="select is-fullwidth">
-                <select v-model="proxy.protocol">
-                  <option selected>HTTP</option>
-                  <option>HTTPS</option>
-                  <option>SOCKS4</option>
-                  <option>SOCKS5</option>
-                </select>
-              </span>
-            </p>
-            <p class="control">
-              <input class="input"
-                     type="number"
-                     v-model.trim="proxy.port"
-                     placeholder="Port">
-            </p>
-          </div>
-        </div>
-
-        <p class="control">
-          <a class="button is-primary is-flex"
-             @click="addProxy">Add</a>
+  <div class="container">
+    <div class="section">
+      <aside class="menu">
+        <p class="menu-label is-size-5">
+          Proxies
+          <br>
+          <span class="is-size-7">Click to set default proxy. </span>
         </p>
-      </div>
-    </nav>
-    <br>
-    <footer class="footer">
-      <div class="container">
-        <div class="content has-text-centered">
-          <p>
-            <strong>Auto Proxy</strong> by
-            <a href="https://github.com/mubaidr"
-               target="_blank">Muhammad Ubaid Raza</a>.
-            <br> The source code is licensed
-            <a href="http://opensource.org/licenses/mit-license.php"
-               target="_blank">MIT</a>.
+        <template v-if="preferences">
+          <transition-group class="proxies-list"
+                            name="list-out"
+                            appear
+                            tag="ul">
+            <li class="tags has-addons"
+                v-for="proxy in preferences.proxies"
+                :key="proxy.id">
+              <span class="tag"
+                    @click="setDefaultProxy(proxy)"
+                    :class="{'is-primary': isDefault(proxy)}"
+                    :title="getProxyTitle(proxy)">
+                {{ proxy.name.toUpperCase() }}
+              </span>
+              <a @click="deleteProxy(proxy)"
+                 class="tag is-delete"
+                 :class="{'is-disabled': isNotRemoveable(proxy)}" />
+            </li>
+          </transition-group>
+        </template>
+      </aside>
+      <br>
+      <nav class="panel">
+        <p class="menu-label is-size-5">
+          New
+          <br>
+          <span class="is-size-7">Add proxy.</span>
+        </p>
+        <div class="panel-block-custom">
+          <div class="columns is-mobile">
+            <div class="column is-three-fifths">
+              <p class="control">
+                <input class="input"
+                       type="text"
+                       v-model.trim="proxy.name"
+                       placeholder="Name">
+              </p>
+              <p class="control">
+                <input class="input"
+                       type="text"
+                       v-model.trim="proxy.address"
+                       placeholder="Address">
+              </p>
+            </div>
+
+            <div class="column">
+              <p class="control">
+                <span class="select is-fullwidth">
+                  <select v-model="proxy.protocol">
+                    <option selected>HTTP</option>
+                    <option>HTTPS</option>
+                    <option>SOCKS4</option>
+                    <option>SOCKS5</option>
+                  </select>
+                </span>
+              </p>
+              <p class="control">
+                <input class="input"
+                       type="number"
+                       v-model.trim="proxy.port"
+                       placeholder="Port">
+              </p>
+            </div>
+          </div>
+
+          <p class="control">
+            <a class="button is-primary is-flex"
+               @click="addProxy">Add</a>
           </p>
         </div>
-      </div>
-    </footer>
+      </nav>
+      <br>
+      <footer class="footer">
+        <div class="container-fluid">
+          <div class="content has-text-centered">
+            <p>
+              <strong>Auto Proxy</strong> by
+              <a href="https://github.com/mubaidr"
+                 target="_blank">Muhammad Ubaid Raza</a>.
+              <br> The source code is licensed
+              <a href="http://opensource.org/licenses/mit-license.php"
+                 target="_blank">MIT</a>.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
   </div>
 </template>
 
@@ -183,6 +185,11 @@ export default {
 </script>
 
 <style lang="stylus">
+.container {
+  max-width: 470px
+  border: 1px solid rgba(0, 0, 0, 0.05)
+}
+
 .section,
 .footer {
   padding: 2rem 1rem

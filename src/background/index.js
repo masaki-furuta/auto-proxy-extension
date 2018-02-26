@@ -26,8 +26,11 @@ function getPreferences() {
   chrome.storage.sync.get(null, res => {
     ;({ preferences } = res)
 
-    setProxy()
+    if (preferences && preferences.defaultProxy) {
+      setProxy()
+    }
   })
+
   chrome.tabs.query(
     {
       active: true
@@ -57,9 +60,14 @@ chrome.runtime.onInstalled.addListener(details => {
       domainProxyList: {}
     }
 
-    chrome.storage.sync.set({
-      preferences
-    })
+    chrome.storage.sync.set(
+      {
+        preferences
+      },
+      () => {
+        getPreferences()
+      }
+    )
   }
 })
 
