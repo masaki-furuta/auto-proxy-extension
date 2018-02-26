@@ -3,7 +3,11 @@ function getProxyById(proxies, id) {
 
   return proxy.id === 'direct'
     ? `'DIRECT'`
-    : `'${proxy.protocol} ${proxy.address}:${proxy.port}'`
+    : `'${
+        proxy.protocol.toLowerCase().indexOf('socks') > -1
+          ? proxy.protocol
+          : 'PROXY'
+      } ${proxy.address}:${proxy.port}'`
 }
 
 module.exports.pacScriptData = preferences => {
@@ -18,8 +22,6 @@ module.exports.pacScriptData = preferences => {
 
   func += `return ${getProxyById(proxies, defaultProxy)};\n`
   func += '}\n'
-
-  console.log(func)
 
   return func
 }
