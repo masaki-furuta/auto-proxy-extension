@@ -165,6 +165,14 @@ export default {
         p => p.id !== proxy.id
       )
 
+      // clear domain proxy list
+      const domains = Object.keys(this.preferences.domainProxyList)
+      domains.forEach(domain => {
+        if (this.preferences.domainProxyList[domain] === proxy.id) {
+          delete this.preferences.domainProxyList[domain]
+        }
+      })
+
       debounce(this.setPreferences, 250, { trailing: true })()
     },
 
