@@ -57,7 +57,8 @@ chrome.runtime.onInstalled.addListener(details => {
         }
       ],
       defaultProxy: 'direct',
-      domainProxyList: {}
+      domainProxyList: {},
+      customDomainList: ''
     }
 
     chrome.storage.sync.set(

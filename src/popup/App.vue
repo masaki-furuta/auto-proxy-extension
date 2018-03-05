@@ -9,9 +9,9 @@
     <hr>
     <template v-if="preferences">
       <p class="control">
-        <input class="input is-small"
+        <input v-model="domainFilter"
+               class="input is-small"
                type="text"
-               v-model="domainFilter"
                placeholder="Filter domains">
       </p>
       <br>
@@ -20,13 +20,13 @@
                         tag="ul">
         <li v-for="domain in filteredDomains"
             :key="domain">
-          <div class="dropdown custom is-block"
-               @click="toggleActiveDomain(domain)"
-               :class="{'is-active': activeDomain === domain}">
+          <div :class="{'is-active': activeDomain === domain}"
+               class="dropdown custom is-block"
+               @click="toggleActiveDomain(domain)">
             <div class="dropdown-trigger">
-              <button class="button is-block"
-                      aria-haspopup="true"
-                      :aria-controls="'dropdown-menu-' + domain">
+              <button :aria-controls="'dropdown-menu-' + domain"
+                      class="button is-block"
+                      aria-haspopup="true">
                 <div class="columns is-mobile">
                   <div class="column is-two-third">
                     <span>{{ domain }}</span>
@@ -39,15 +39,15 @@
                 </div>
               </button>
             </div>
-            <div class="dropdown-menu"
-                 :id="'dropdown-menu-' + domain"
+            <div :id="'dropdown-menu-' + domain"
+                 class="dropdown-menu"
                  role="menu">
               <div class="dropdown-content">
-                <a class="dropdown-item"
-                   v-for="proxy in preferences.proxies"
+                <a v-for="proxy in preferences.proxies"
+                   :class="{'is-active': isDefaultProxyForDomain(domain, proxy)}"
                    :key="proxy.id"
-                   @click="setDomainProxy(domain, proxy.id)"
-                   :class="{'is-active': isDefaultProxyForDomain(domain, proxy)}">
+                   class="dropdown-item"
+                   @click="setDomainProxy(domain, proxy.id)">
                   {{ proxy.name }}
                 </a>
               </div>

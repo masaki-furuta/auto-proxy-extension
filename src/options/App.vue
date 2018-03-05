@@ -12,18 +12,18 @@
                             name="list-out"
                             appear
                             tag="ul">
-            <li class="tags has-addons"
-                v-for="proxy in preferences.proxies"
-                :key="proxy.id">
-              <span class="tag"
-                    @click="setDefaultProxy(proxy)"
-                    :class="{'is-primary': isDefault(proxy)}"
-                    :title="getProxyTitle(proxy)">
+            <li v-for="proxy in preferences.proxies"
+                :key="proxy.id"
+                class="tags has-addons">
+              <span :class="{'is-primary': isDefault(proxy)}"
+                    :title="getProxyTitle(proxy)"
+                    class="tag"
+                    @click="setDefaultProxy(proxy)">
                 {{ proxy.name.toUpperCase() }}
               </span>
-              <a @click="deleteProxy(proxy)"
+              <a :class="{'is-disabled': isNotRemoveable(proxy)}"
                  class="tag is-delete"
-                 :class="{'is-disabled': isNotRemoveable(proxy)}" />
+                 @click="deleteProxy(proxy)" />
             </li>
           </transition-group>
         </template>
@@ -39,15 +39,15 @@
           <div class="columns is-mobile">
             <div class="column is-three-fifths">
               <p class="control">
-                <input class="input"
+                <input v-model.trim="proxy.name"
+                       class="input"
                        type="text"
-                       v-model.trim="proxy.name"
                        placeholder="Name">
               </p>
               <p class="control">
-                <input class="input"
+                <input v-model.trim="proxy.address"
+                       class="input"
                        type="text"
-                       v-model.trim="proxy.address"
                        placeholder="Address">
               </p>
             </div>
@@ -56,7 +56,7 @@
               <p class="control">
                 <span class="select is-fullwidth">
                   <select v-model="proxy.protocol">
-                    <option selected>HTTP</option>
+                    <option selected="">HTTP</option>
                     <option>HTTPS</option>
                     <option>SOCKS4</option>
                     <option>SOCKS5</option>
@@ -64,9 +64,9 @@
                 </span>
               </p>
               <p class="control">
-                <input class="input"
+                <input v-model.trim="proxy.port"
+                       class="input"
                        type="number"
-                       v-model.trim="proxy.port"
                        placeholder="Port">
               </p>
             </div>
