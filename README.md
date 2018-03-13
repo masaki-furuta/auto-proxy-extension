@@ -1,5 +1,7 @@
 # auto-proxy-extension
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/mubaidr/auto-proxy-extension.svg)](https://greenkeeper.io/)
+
 Automate proxy usage per URL basis.
 
 ## Scripts
