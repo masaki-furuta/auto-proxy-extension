@@ -29,7 +29,7 @@
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-react": "^7.10.0",
     "eslint-plugin-vue": "^4.7.1",
-    "eslint": "^5.0.1",
+    "eslint": "^5.2.0",
     "file-loader": "^1.1.11",
     "style-loader": "^0.21.0",
     "stylus-loader": "^3.0.2",
