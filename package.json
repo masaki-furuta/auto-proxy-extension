@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "bulma": "0.7.1",
-    "vue": "^2.5.16",
+    "vue": "^2.5.17",
     "lodash.debounce": "^4.0.8"
   },
   "devDependencies": {
