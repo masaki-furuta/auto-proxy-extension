@@ -2,22 +2,13 @@
   <div class="container">
     <div class="section">
       <aside class="menu">
-        <p class="menu-label is-size-5">
-          Proxies <br />
+        <p class="menu-label is-size-5">Proxies
+          <br>
           <span class="is-size-7">Click to set default proxy.</span>
         </p>
         <template v-if="preferences">
-          <transition-group
-            class="proxies-list"
-            name="list-out"
-            appear
-            tag="ul"
-          >
-            <li
-              v-for="proxy in preferences.proxies"
-              :key="proxy.id"
-              class="tags has-addons"
-            >
+          <transition-group class="proxies-list" name="list-out" appear tag="ul">
+            <li v-for="proxy in preferences.proxies" :key="proxy.id" class="tags has-addons">
               <span
                 :class="{ 'is-primary': isDefault(proxy) }"
                 :title="getProxyTitle(proxy)"
@@ -25,7 +16,7 @@
                 @click="setDefaultProxy(proxy)"
               >
                 {{ proxy.name.toUpperCase() }}
-                <strong v-show="isDefault(proxy)">(Default)</strong>
+                <span v-show="isDefault(proxy)">(default)</span>
               </span>
               <a
                 :class="{ 'is-disabled': isNotRemoveable(proxy) }"
@@ -36,30 +27,20 @@
           </transition-group>
         </template>
       </aside>
-      <br />
+      <br>
       <nav class="panel">
-        <p class="menu-label is-size-5">
-          New <br />
+        <p class="menu-label is-size-5">New
+          <br>
           <span class="is-size-7">Add proxy.</span>
         </p>
         <div class="panel-block-custom">
           <div class="columns is-mobile">
             <div class="column is-three-fifths">
               <p class="control">
-                <input
-                  v-model.trim="proxy.name"
-                  class="input"
-                  type="text"
-                  placeholder="Name"
-                />
+                <input v-model.trim="proxy.name" class="input" type="text" placeholder="Name">
               </p>
               <p class="control">
-                <input
-                  v-model.trim="proxy.address"
-                  class="input"
-                  type="text"
-                  placeholder="Address"
-                />
+                <input v-model.trim="proxy.address" class="input" type="text" placeholder="Address">
               </p>
             </div>
 
@@ -75,12 +56,7 @@
                 </span>
               </p>
               <p class="control">
-                <input
-                  v-model.trim="proxy.port"
-                  class="input"
-                  type="number"
-                  placeholder="Port"
-                />
+                <input v-model.trim="proxy.port" class="input" type="number" placeholder="Port">
               </p>
             </div>
           </div>
@@ -90,20 +66,18 @@
           </p>
         </div>
       </nav>
-      <br />
+      <br>
       <footer class="footer">
         <div class="container-fluid">
           <div class="content has-text-centered">
             <p>
               <strong>Auto Proxy</strong> by
-              <a href="https://github.com/mubaidr" target="_blank"
-                >Muhammad Ubaid Raza</a
-              >. <br />The source code is licensed
+              <a href="https://github.com/mubaidr" target="_blank">Muhammad Ubaid Raza</a>.
+              <br>The source code is licensed
               <a
                 href="http://opensource.org/licenses/mit-license.php"
                 target="_blank"
-                >MIT</a
-              >.
+              >MIT</a>.
             </p>
           </div>
         </div>
@@ -113,100 +87,98 @@
 </template>
 
 <script>
-import debounce from "lodash.debounce";
+import debounce from 'lodash.debounce'
 
 export default {
   data() {
     return {
       proxy: {
-        name: "",
-        address: "",
-        port: "",
-        protocol: "HTTP"
+        name: '',
+        address: '',
+        port: '',
+        protocol: 'HTTP',
       },
-      preferences: null // { proxies, defaultProxy, domainProxyList }
-    };
+      preferences: null, // { proxies, defaultProxy, domainProxyList }
+    }
   },
 
   created() {
-    this.getPreferences();
+    this.getPreferences()
   },
 
   methods: {
     isDefault(proxy) {
-      return proxy.id === this.preferences.defaultProxy;
+      return proxy.id === this.preferences.defaultProxy
     },
 
     getProxyTitle(proxy) {
-      return proxy.id === "direct"
-        ? "Use Direct Connection"
-        : `${proxy.protocol}://${proxy.address}:${proxy.port}`;
+      return proxy.id === 'direct'
+        ? 'Use Direct Connection'
+        : `${proxy.protocol}://${proxy.address}:${proxy.port}`
     },
 
     isNotRemoveable(proxy) {
-      return (
-        proxy.id === this.preferences.defaultProxy || proxy.id === "direct"
-      );
+      return proxy.id === this.preferences.defaultProxy || proxy.id === 'direct'
     },
 
     setDefaultProxy(proxy) {
-      this.preferences.defaultProxy = proxy.id;
+      this.preferences.defaultProxy = proxy.id
 
-      debounce(this.setPreferences, 250, { trailing: true })();
+      debounce(this.setPreferences, 250, { trailing: true })()
     },
 
     addProxy() {
-      if (!this.proxy.name) this.proxy.name = "Unnamed";
-      if (!this.proxy.address) this.proxy.address = "127.0.0.1";
-      if (!this.proxy.port) this.proxy.address = 8080;
+      if (!this.proxy.name) this.proxy.name = 'Unnamed'
+      if (!this.proxy.address) this.proxy.address = '127.0.0.1'
+      if (!this.proxy.port) this.proxy.port = 8080
 
-      const clone = JSON.parse(JSON.stringify(this.proxy));
-      clone.id = Date.now();
-      this.preferences.proxies.push(clone);
+      const clone = JSON.parse(JSON.stringify(this.proxy))
+      clone.id = Date.now()
+      this.preferences.proxies.push(clone)
 
       this.proxy = {
-        name: "",
-        address: "",
+        name: '',
+        address: '',
         port: 8080,
-        protocol: "HTTP"
-      };
+        protocol: 'HTTP',
+      }
 
-      debounce(this.setPreferences, 250, { trailing: true })();
+      debounce(this.setPreferences, 250, { trailing: true })()
     },
 
     deleteProxy(proxy) {
-      if (proxy.id === this.preferences.defaultProxy || proxy.id === "direct")
-        return;
+      if (proxy.id === this.preferences.defaultProxy || proxy.id === 'direct')
+        return
 
       this.preferences.proxies = this.preferences.proxies.filter(
-        p => p.id !== proxy.id
-      );
+        p => p.id !== proxy.id,
+      )
 
       // clear domain proxy list
-      const domains = Object.keys(this.preferences.domainProxyList);
+      const domains = Object.keys(this.preferences.domainProxyList)
       domains.forEach(domain => {
         if (this.preferences.domainProxyList[domain] === proxy.id) {
-          delete this.preferences.domainProxyList[domain];
+          delete this.preferences.domainProxyList[domain]
         }
-      });
+      })
 
-      debounce(this.setPreferences, 250, { trailing: true })();
+      debounce(this.setPreferences, 250, { trailing: true })()
     },
 
     getPreferences() {
-      chrome.extension.sendMessage({ type: "getPreferences" }, preferences => {
-        this.preferences = preferences;
-      });
+      chrome.extension.sendMessage({ type: 'getPreferences' }, preferences => {
+        this.preferences = preferences
+      })
     },
 
     setPreferences() {
       chrome.extension.sendMessage({
-        type: "setPreferences",
-        preferences: this.preferences
-      });
-    }
-  }
-};
+        type: 'setPreferences',
+        preferences: this.preferences,
+      })
+    },
+  },
+}
 </script>
 
 <style lang="stylus">

@@ -1,151 +1,151 @@
-import { pacScriptData } from "./pacScript";
+import {pacScriptData} from './pacScript'
 
-let preferences = {};
-const domainList = {}; // domain list of current opended tabs
-let activeTabId = null; // active tab id
+let preferences = {}
+const domainList = {} // domain list of current opended tabs
+let activeTabId = null // active tab id
 
 // preferences
 function setProxy() {
   const config = {
-    mode: "pac_script",
+    mode: 'pac_script',
     rules: {
-      bypassList: ["<local>"]
+      bypassList: ['<local>'],
     },
     pacScript: {
-      data: pacScriptData(preferences)
-    }
-  };
+      data: pacScriptData(preferences),
+    },
+  }
 
   chrome.proxy.settings.set({
     value: config,
-    scope: "regular"
-  });
+    scope: 'regular',
+  })
 }
 
 function getPreferences() {
   chrome.storage.sync.get(null, res => {
-    ({ preferences } = res);
+    ;({ preferences } = res)
 
     if (preferences && preferences.defaultProxy) {
-      setProxy();
+      setProxy()
     }
-  });
+  })
 
   chrome.tabs.query(
     {
-      active: true
+      active: true,
     },
     tab => {
-      activeTabId = tab[0].id;
-    }
-  );
+      activeTabId = tab[0].id
+    },
+  )
 }
 
-getPreferences();
+getPreferences()
 
 // install listner
 chrome.runtime.onInstalled.addListener(details => {
-  if (details.reason === "install") {
+  if (details.reason === 'install') {
     preferences = {
       proxies: [
         {
-          id: "direct",
-          name: "Direct",
-          address: "",
-          port: "",
-          protocol: ""
-        }
+          id: 'direct',
+          name: 'Direct',
+          address: '',
+          port: '',
+          protocol: '',
+        },
       ],
-      defaultProxy: "direct",
+      defaultProxy: 'direct',
       domainProxyList: {},
-      customDomainList: ""
-    };
+      customDomainList: '',
+    }
 
     chrome.storage.sync.set(
       {
-        preferences
+        preferences,
       },
       () => {
-        getPreferences();
-      }
-    );
+        getPreferences()
+      },
+    )
   }
-});
+})
 
 // request listner
 chrome.webRequest.onBeforeRequest.addListener(
   details => {
-    const { tabId } = details;
+    const { tabId, url } = details
 
-    const a = document.createElement("a");
-    a.href = details.url;
+    const a = document.createElement('a')
+    a.href = url
 
-    const url = a.host.replace("www.", "");
+    const address = a.hostname
 
     if (domainList[tabId]) {
-      if (domainList[tabId].indexOf(url) === -1) {
-        domainList[tabId].push(url);
+      if (domainList[tabId].indexOf(address) === -1) {
+        domainList[tabId].push(address)
       }
     } else {
-      domainList[tabId] = [url];
+      domainList[tabId] = [address]
     }
   },
   {
-    urls: ["http://*/*", "https://*/*"]
+    urls: ['http://*/*', 'https://*/*'],
   },
-  []
-);
+  [],
+)
 
 // tab listners
 chrome.tabs.onActivated.addListener(details => {
-  activeTabId = details.tabId;
-});
+  activeTabId = details.tabId
+})
 
 chrome.tabs.onReplaced.addListener(details => {
-  const { tabId } = details;
+  const { tabId } = details
 
-  delete domainList[tabId];
-});
+  delete domainList[tabId]
+})
 
 chrome.tabs.onRemoved.addListener(details => {
-  const { tabId } = details;
+  const { tabId } = details
 
-  delete domainList[tabId];
-});
+  delete domainList[tabId]
+})
 
 chrome.tabs.onUpdated.addListener(details => {
-  const { tabId, status } = details;
+  const { tabId, status } = details
 
-  if (status === "loading") {
-    delete domainList[tabId];
+  if (status === 'loading') {
+    delete domainList[tabId]
   }
-});
+})
 
 // message listner
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.type) {
-    case "getPreferences":
-      sendResponse(preferences);
-      break;
+    case 'getPreferences':
+      sendResponse(preferences)
+      break
 
-    case "setPreferences":
-      ({ preferences } = request);
+    case 'setPreferences':
+      ;({ preferences } = request)
       chrome.storage.sync.set({
-        preferences
-      });
-      setProxy();
-      break;
+        preferences,
+      })
+      setProxy()
+      break
 
-    case "getDomainList":
-      sendResponse(domainList[activeTabId]);
-      break;
+    case 'getDomainList':
+      sendResponse(domainList[activeTabId])
+      break
 
     default:
-      break;
+      break
   }
-});
+})
 
 /* debug */
 chrome.proxy.onProxyError.addListener(err => {
-  console.log(`${err.error} : ${err.details}`);
-});
+  console.log(`${err.error} : ${err.details}`)
+})

@@ -13,13 +13,12 @@
     "window": true
   },
   "parserOptions": {
-    "ecmaVersion": 6,
+    "ecmaVersion": 8,
     "sourceType": "module"
   },
   "plugins": ["vue"],
   "rules": {
     "linebreak-style": "off",
-    "no-console": "off",
-    "vue/max-attributes-per-line": "off"
+    "no-console": "off"
   }
 }

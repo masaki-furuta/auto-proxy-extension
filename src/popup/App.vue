@@ -1,12 +1,15 @@
 <template>
   <div class="section">
     <p class="menu-label is-size-5">Requests</p>
-    <span class="is-size-7"
-      >Click domain to choose proxy for that domain or visit
-      <a href="./options.html" target="_blank">Options</a> to choose a default
+    <span class="is-size-7">
+      Click domain to choose proxy for that domain or visit
+      <a
+        href="./options.html"
+        target="_blank"
+      >Options</a> to choose a default
       for all domains.
     </span>
-    <hr />
+    <hr>
     <template v-if="preferences">
       <p class="control">
         <input
@@ -14,9 +17,9 @@
           class="input is-small"
           type="text"
           placeholder="Filter domains"
-        />
+        >
       </p>
-      <br />
+      <br>
       <transition-group name="list-out" appear tag="ul">
         <li v-for="domain in filteredDomains" :key="domain">
           <div
@@ -35,19 +38,25 @@
                     <span>{{ domain }}</span>
                   </div>
                   <div class="column">
-                    <span class="has-text-grey-lighter is-pulled-right">
-                      {{ defaultProxyForDomain(domain) }}
-                    </span>
+                    <span
+                      class="has-text-grey-lighter is-pulled-right"
+                    >{{ defaultProxyForDomain(domain) }}</span>
                   </div>
                 </div>
               </button>
             </div>
-            <div
-              :id="'dropdown-menu-' + domain"
-              class="dropdown-menu"
-              role="menu"
-            >
+            <div :id="'dropdown-menu-' + domain" class="dropdown-menu" role="menu">
               <div class="dropdown-content">
+                <!-- Reset to Default -->
+                <a
+                  title="Reset Proxy for this domain to default one"
+                  :class="{
+                    'is-active': isDefaultProxyForDomain(domain, false)
+                  }"
+                  class="dropdown-item"
+                  @click="setDomainProxy(domain, false)"
+                >Reset To Default</a>
+                <!-- Stored proxy preferences -->
                 <a
                   v-for="proxy in preferences.proxies"
                   :class="{
@@ -56,19 +65,17 @@
                   :key="proxy.id"
                   class="dropdown-item"
                   @click="setDomainProxy(domain, proxy.id)"
-                >
-                  {{ proxy.name }}
-                </a>
+                >{{ proxy.name }}</a>
               </div>
             </div>
           </div>
         </li>
       </transition-group>
       <p v-show="filteredDomains.length === 0">No requests captured.</p>
-      <br />
+      <br>
     </template>
     <div class="has-text-centered is-size-7">
-      <a href="https://github.com/mubaidr" target="_blank"> mubaidr@GitHub </a>
+      <a href="https://github.com/mubaidr" target="_blank">mubaidr@GitHub</a>
     </div>
   </div>
 </template>
@@ -78,128 +85,132 @@ export default {
   data() {
     return {
       activeDomain: null,
-      domainFilter: "",
+      domainFilter: '',
       domainList: [],
-      preferences: null // { proxies, defaultProxy, domainProxyList }
-    };
+      preferences: null, // { proxies, defaultProxy, domainProxyList }
+    }
   },
 
   computed: {
     filteredDomains() {
       return this.domainList
         .filter(domain => domain.indexOf(this.domainFilter) > -1)
-        .sort();
-    }
+        .sort()
+    },
   },
 
   created() {
-    this.getPreferences();
-    this.getDomainList();
+    this.getPreferences()
+    this.getDomainList()
   },
 
   methods: {
     isDefaultProxyForDomain(domain, proxy) {
       const p =
         this.preferences.domainProxyList[domain] ||
-        this.preferences.defaultProxy;
+        this.preferences.defaultProxy
 
-      return p === proxy.id;
+      return p === proxy.id
     },
 
     defaultProxyForDomain(domain) {
       const proxyId =
         this.preferences.domainProxyList[domain] ||
-        this.preferences.defaultProxy;
+        this.preferences.defaultProxy
 
       return this.preferences.proxies.filter(proxy => proxy.id === proxyId)[0]
-        .name;
+        .name
     },
 
     toggleActiveDomain(domain) {
       if (this.activeDomain === domain) {
-        this.activeDomain = null;
+        this.activeDomain = null
       } else {
-        this.activeDomain = domain;
+        this.activeDomain = domain
       }
     },
 
     getPreferences() {
-      chrome.extension.sendMessage({ type: "getPreferences" }, preferences => {
-        this.$set(this, "preferences", preferences);
-      });
+      chrome.extension.sendMessage({ type: 'getPreferences' }, preferences => {
+        this.$set(this, 'preferences', preferences)
+      })
     },
 
     setPreferences() {
       chrome.extension.sendMessage({
-        type: "setPreferences",
-        preferences: this.preferences
-      });
+        type: 'setPreferences',
+        preferences: this.preferences,
+      })
     },
 
     getDomainList() {
-      chrome.extension.sendMessage({ type: "getDomainList" }, domainList => {
-        this.domainList = domainList;
-      });
+      chrome.extension.sendMessage({ type: 'getDomainList' }, domainList => {
+        this.domainList = domainList
+      })
     },
 
     setDomainProxy(domain, proxyId) {
-      this.$set(this.preferences.domainProxyList, domain, proxyId);
+      if (proxyId) {
+        this.$set(this.preferences.domainProxyList, domain, proxyId)
+      } else {
+        delete this.preferences.domainProxyList[domain]
+        this.$set(this, 'preferences', this.preferences)
+      }
 
-      this.setPreferences();
-    }
-  }
-};
+      this.setPreferences()
+    },
+  },
+}
 </script>
 
 <style lang="stylus">
-.section,
-.footer {
-  padding: 2rem 1rem
+.section, .footer {
+  padding: 2rem 1rem;
 }
 
 .dropdown.custom {
-  margin-bottom: 5px
+  margin-bottom: 5px;
 
   .dropdown-menu {
-    top: calc(100% - 5px)
-    width: 100%
+    top: calc(100% - 5px);
+    width: 100%;
   }
 
   .dropdown-content {
-    padding: 0
-    border-radius: 0 0 3px 3px
-    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.5)
+    padding: 0;
+    border-radius: 0 0 3px 3px;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.5);
   }
 
   .dropdown-item {
     &.is-active {
-      cursor: default
-      color: #8cb0ec !important
+      cursor: default;
+      color: #8cb0ec !important;
     }
   }
 
   .button {
     &.is-block {
-      width: 100%
-      text-align: left
-      justify-content: left
+      width: 100%;
+      text-align: left;
+      justify-content: left;
     }
 
     .column:not(.is-two-third) {
-      padding-right: 24px
-      position: relative
+      padding-right: 24px;
+      position: relative;
 
       &:before {
-        content: ' '
-        position: absolute
-        right: 0
-        width: 24px
-        height: 24px
-        background-image: url('/assets/icons/arrow_drop_down.png')
-        background-position: 100% center
-        background-repeat: no-repeat
-        background-size: 24px
-        transition: rotateX 0.25s ease-out
+        content: ' ';
+        position: absolute;
+        right: 0;
+        width: 24px;
+        height: 24px;
+        background-image: url('/assets/icons/arrow_drop_down.png');
+        background-position: 100% center;
+        background-repeat: no-repeat;
+        background-size: 24px;
+        transition: rotateX 0.25s ease-out;
       }
     }
   }
@@ -208,17 +219,17 @@ export default {
     .button {
       .column:not(.is-two-third) {
         &:before {
-          transform: rotateX(180deg)
+          transform: rotateX(180deg);
         }
       }
     }
   }
 
   .dropdown-icon {
-    background-image: url('/assets/icons/arrow_drop_down.png')
-    background-position: 90% center
-    background-repeat: no-repeat
-    background-size: 50%
+    background-image: url('/assets/icons/arrow_drop_down.png');
+    background-position: 90% center;
+    background-repeat: no-repeat;
+    background-size: 50%;
   }
 }
 </style>
