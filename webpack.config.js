@@ -1,8 +1,7 @@
-const { exec } = require('child_process')
 const path = require('path')
 const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
@@ -56,7 +55,7 @@ module.exports = {
     extensions: ['.js'],
   },
   plugins: [
-    new CleanWebpackPlugin(['./dist/', './dist-zip/']),
+    new CleanWebpackPlugin({ paths: ['./dist/', './dist-zip/'] }),
     new CopyWebpackPlugin([
       { from: 'assets', to: 'assets' },
       { from: 'manifest.json', to: 'manifest.json', flatten: true },
